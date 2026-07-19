@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     db_name: str = "wh"
     db_user: str = "seoyoon"
     db_password: str = ""
+    db_ssl: bool = False
 
     # GPT api
     openai_api_key: str | None = None

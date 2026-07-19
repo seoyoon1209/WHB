@@ -19,6 +19,8 @@ async def init():
         database=settings.db_name,
         user=settings.db_user,
         password=settings.db_password or None,
+        ssl="require" if settings.db_ssl else None,
+        statement_cache_size=0,
         min_size=1,
         max_size=10,
     )
