@@ -25,6 +25,13 @@ class DiaryEntryResponse(DiaryEntry):
     diary_id: int
 
 
+class HormoneEntry(BaseModel):
+    entry_date: date
+    lh: float | None = None
+    e3g: float | None = None
+    pdg: float | None = None
+
+
 async def _get_user_id(conn, username: str) -> int:
     row = await conn.fetchrow("SELECT user_id FROM app_user WHERE username = $1", username)
     if not row:
@@ -60,6 +67,28 @@ async def create_entry(username: str, body: DiaryEntry, conn: DbPoolDep):
         body.fatigue,
         body.sleep_quality,
         body.stress,
+        body.lh,
+        body.e3g,
+        body.pdg,
+    )
+    return dict(row)
+
+
+@router.put("/{username}/hormone", response_model=DiaryEntryResponse)
+async def upsert_hormone(username: str, body: HormoneEntry, conn: DbPoolDep):
+    user_id = await _get_user_id(conn, username)
+    row = await conn.fetchrow(
+        """
+        INSERT INTO diary_entry (user_id, entry_date, lh, e3g, pdg)
+        VALUES ($1, $2, $3, $4, $5)
+        ON CONFLICT (user_id, entry_date) DO UPDATE SET
+            lh = EXCLUDED.lh,
+            e3g = EXCLUDED.e3g,
+            pdg = EXCLUDED.pdg
+        RETURNING diary_id, entry_date, headache, stomachache, mood, fatigue, sleep_quality, stress, lh, e3g, pdg
+        """,
+        user_id,
+        body.entry_date,
         body.lh,
         body.e3g,
         body.pdg,

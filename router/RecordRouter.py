@@ -54,6 +54,18 @@ async def list_records(username: str, conn: DbPoolDep):
     return [dict(row) for row in rows]
 
 
+@router.delete("/{username}/{record_id}", status_code=204)
+async def delete_record(username: str, record_id: int, conn: DbPoolDep):
+    user_id = await _get_user_id(conn, username)
+    result = await conn.execute(
+        "DELETE FROM period_record WHERE record_id = $1 AND user_id = $2",
+        record_id,
+        user_id,
+    )
+    if result == "DELETE 0":
+        raise HTTPException(status_code=404, detail="기록을 찾을 수 없습니다.")
+
+
 @router.patch("/{username}/latest", response_model=PeriodRecordResponse)
 async def set_latest_end_date(username: str, body: EndDateRequest, conn: DbPoolDep):
     user_id = await _get_user_id(conn, username)

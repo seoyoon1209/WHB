@@ -1,10 +1,10 @@
 BEGIN;
 
--- 아이디1~10 / 비밀번호1~10, 이름은 사용자1~10
+-- 아이디1~10 / 비밀번호는 11,22,33,...,99,10, 이름은 사용자1~10
 INSERT INTO app_user (username, password_hash, name)
 SELECT
     '아이디' || n,
-    crypt('비밀번호' || n, gen_salt('bf')),
+    crypt(CASE WHEN n = 10 THEN '10' ELSE (n::text || n::text) END, gen_salt('bf')),
     '사용자' || n
 FROM generate_series(1, 10) AS n;
 
@@ -27,9 +27,20 @@ UNION ALL
 SELECT u.user_id, DATE '2024-03-18' - (u.user_id * 3)::int, DATE '2024-03-23' - (u.user_id * 3)::int
 FROM app_user u;
 
--- 증상 다이어리 (1건씩)
-INSERT INTO diary_entry (user_id, entry_date, headache, stomachache, mood, fatigue, sleep_quality, stress)
-SELECT u.user_id, DATE '2024-04-16', (u.user_id % 5), (u.user_id % 5) + 1, '보통', (u.user_id % 4), (u.user_id % 5) + 1, (u.user_id % 6)
+-- 증상 다이어리 + 호르몬 자가보고 (1건씩)
+INSERT INTO diary_entry (user_id, entry_date, headache, stomachache, mood, fatigue, sleep_quality, stress, lh, e3g, pdg)
+SELECT
+    u.user_id,
+    DATE '2024-04-16',
+    (u.user_id % 5),
+    (u.user_id % 5) + 1,
+    '보통',
+    (u.user_id % 4),
+    (u.user_id % 5) + 1,
+    (u.user_id % 6),
+    5 + (u.user_id % 10),
+    40 + (u.user_id % 8) * 15,
+    1 + (u.user_id % 5) * 0.8
 FROM app_user u;
 
 -- 예측 결과 (1건씩)
