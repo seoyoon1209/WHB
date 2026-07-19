@@ -1,4 +1,4 @@
-# 실제 결과 피드백/개인화 (SFR-012)
+# Actual outcome feedback / personalization (SFR-012)
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from db.dbpool import DbPoolDep
@@ -22,7 +22,7 @@ class FeedbackResponse(BaseModel):
 async def create_feedback(body: FeedbackEntry, conn: DbPoolDep):
     user_row = await conn.fetchrow("SELECT user_id FROM app_user WHERE username = $1", body.username)
     if not user_row:
-        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        raise HTTPException(status_code=404, detail="User not found.")
 
     prediction_row = await conn.fetchrow(
         "SELECT prediction_id FROM prediction_result WHERE user_id = $1 ORDER BY predicted_at DESC LIMIT 1",

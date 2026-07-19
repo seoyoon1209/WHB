@@ -1,4 +1,4 @@
-# 주기 단계 판단 + 예측 실행/결과/근거/가이드 (SFR-007~011)
+# Cycle phase detection + prediction run/result/rationale/guide (SFR-007~011)
 import json
 from datetime import date
 
@@ -36,7 +36,7 @@ class GuideResponse(BaseModel):
 async def _get_user_id(conn, username: str) -> int:
     row = await conn.fetchrow("SELECT user_id FROM app_user WHERE username = $1", username)
     if not row:
-        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        raise HTTPException(status_code=404, detail="User not found.")
     return row["user_id"]
 
 
@@ -133,11 +133,11 @@ async def get_guide(username: str, conn: DbPoolDep):
         user_id,
     )
     if not latest:
-        raise HTTPException(status_code=404, detail="예측 결과가 없습니다. 먼저 예측을 실행해주세요.")
+        raise HTTPException(status_code=404, detail="No prediction result found. Please run a prediction first.")
 
     factors = json.loads(latest["factors"]) if latest["factors"] else []
     try:
         guide = await generate_guide(row["name"], latest["headache_risk"], latest["stomachache_risk"], factors)
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"AI 가이드 생성에 실패했어요: {exc}")
+        raise HTTPException(status_code=502, detail=f"Failed to generate AI guide: {exc}")
     return {"guide": guide}

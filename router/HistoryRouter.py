@@ -1,4 +1,4 @@
-# 이력 조회/관리 (SFR-013)
+# History view/manage (SFR-013)
 from fastapi import APIRouter, HTTPException
 from db.dbpool import DbPoolDep
 
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/history", tags=["history"])
 async def get_history(username: str, conn: DbPoolDep):
     user_row = await conn.fetchrow("SELECT user_id FROM app_user WHERE username = $1", username)
     if not user_row:
-        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        raise HTTPException(status_code=404, detail="User not found.")
     user_id = user_row["user_id"]
 
     records = await conn.fetch(

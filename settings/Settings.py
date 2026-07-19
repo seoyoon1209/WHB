@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # DB 접속 정보 (로컬 개발 기본값)
+    # DB connection info (local dev defaults)
     db_host: str = "localhost"
     db_port: int = 5432
     db_name: str = "wh"
@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     openai_model: str = "gpt-4o-mini"
 
-    # .env에서 읽어오기
+    # Load from .env
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 

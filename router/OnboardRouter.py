@@ -1,4 +1,4 @@
-# 기초정보 입력(온보딩) (SFR-002)
+# Onboarding basic info input (SFR-002)
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from db.dbpool import DbPoolDep
@@ -17,7 +17,7 @@ class OnboardRequest(BaseModel):
 async def _get_user_id(conn, username: str) -> int:
     row = await conn.fetchrow("SELECT user_id FROM app_user WHERE username = $1", username)
     if not row:
-        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        raise HTTPException(status_code=404, detail="User not found.")
     return row["user_id"]
 
 

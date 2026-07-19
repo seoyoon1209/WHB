@@ -1,4 +1,4 @@
-# 증상/생활/호르몬 자가보고 (SFR-004~006)
+# Symptom/lifestyle/hormone self-report (SFR-004~006)
 from datetime import date
 
 from fastapi import APIRouter, HTTPException
@@ -7,8 +7,9 @@ from db.dbpool import DbPoolDep
 
 router = APIRouter(prefix="/diaries", tags=["diaries"])
 
-# data.csv의 *_ord 피처와 1:1 대응. cramps_severe(=cramps_ord>=4)처럼 데이터셋에만 있는
-# 파생 라벨은 사용자 입력이 아니라 예측 시점에 계산하는 값이라 여기 포함하지 않는다.
+# Maps 1:1 to the *_ord features in data.csv. Derived labels that only exist in the dataset,
+# like cramps_severe (=cramps_ord>=4), are computed at prediction time rather than user input,
+# so they are not included here.
 _ENTRY_COLUMNS = (
     "headache",       # headaches_ord
     "stomachache",    # cramps_ord
@@ -63,7 +64,7 @@ class HormoneEntry(BaseModel):
 async def _get_user_id(conn, username: str) -> int:
     row = await conn.fetchrow("SELECT user_id FROM app_user WHERE username = $1", username)
     if not row:
-        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        raise HTTPException(status_code=404, detail="User not found.")
     return row["user_id"]
 
 

@@ -1,4 +1,4 @@
-# 회원가입/로그인/로그아웃 (SFR-001)
+# Signup/login/logout (SFR-001)
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from db.dbpool import DbPoolDep
@@ -30,7 +30,7 @@ class UserResponse(BaseModel):
 async def signup(body: SignupRequest, conn: DbPoolDep):
     existing = await conn.fetchrow("SELECT 1 FROM app_user WHERE username = $1", body.username)
     if existing:
-        raise HTTPException(status_code=409, detail="이미 가입된 아이디입니다.")
+        raise HTTPException(status_code=409, detail="This username is already taken.")
 
     row = await conn.fetchrow(
         """
@@ -61,7 +61,7 @@ async def login(body: LoginRequest, conn: DbPoolDep):
         body.password,
     )
     if not row:
-        raise HTTPException(status_code=401, detail="아이디 또는 비밀번호가 올바르지 않습니다.")
+        raise HTTPException(status_code=401, detail="Incorrect username or password.")
     return dict(row)
 
 
@@ -73,7 +73,7 @@ async def update_name(username: str, body: UpdateNameRequest, conn: DbPoolDep):
         body.name,
     )
     if not row:
-        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        raise HTTPException(status_code=404, detail="User not found.")
     return dict(row)
 
 

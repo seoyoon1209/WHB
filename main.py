@@ -17,10 +17,10 @@ from router.SettingRouter import router as SettingRouter
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await dbpool.init()
-    print("DB 연결")
+    print("DB connected")
     yield
     await dbpool.dispose()
-    print("DB 종료")
+    print("DB disconnected")
 
 
 app = FastAPI(title="WH API", lifespan=lifespan)

@@ -1,4 +1,4 @@
-# 월경 기록 (SFR-003)
+# Period tracking (SFR-003)
 from datetime import date
 
 from fastapi import APIRouter, HTTPException
@@ -24,7 +24,7 @@ class EndDateRequest(BaseModel):
 async def _get_user_id(conn, username: str) -> int:
     row = await conn.fetchrow("SELECT user_id FROM app_user WHERE username = $1", username)
     if not row:
-        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        raise HTTPException(status_code=404, detail="User not found.")
     return row["user_id"]
 
 
@@ -63,7 +63,7 @@ async def delete_record(username: str, record_id: int, conn: DbPoolDep):
         user_id,
     )
     if result == "DELETE 0":
-        raise HTTPException(status_code=404, detail="기록을 찾을 수 없습니다.")
+        raise HTTPException(status_code=404, detail="Record not found.")
 
 
 @router.patch("/{username}/latest", response_model=PeriodRecordResponse)
@@ -83,5 +83,5 @@ async def set_latest_end_date(username: str, body: EndDateRequest, conn: DbPoolD
         body.end_date,
     )
     if not row:
-        raise HTTPException(status_code=404, detail="종료할 진행 중인 기록이 없습니다.")
+        raise HTTPException(status_code=404, detail="No ongoing record to end.")
     return dict(row)
