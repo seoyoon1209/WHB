@@ -1,16 +1,35 @@
-# 샘플 Python 스크립트입니다.
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-# ⌃R을(를) 눌러 실행하거나 내 코드로 바꿉니다.
-# 클래스, 파일, 도구 창, 액션 및 설정을 어디서나 검색하려면 ⇧ 두 번을(를) 누릅니다.
+from router.AuthRouter import router as AuthRouter
+from router.OnboardRouter import router as OnboardRouter
+from router.RecordRouter import router as RecordRouter
+from router.DiaryRouter import router as DiaryRouter
+from router.PredictionRouter import router as PredictionRouter
+from router.FeedbackRouter import router as FeedbackRouter
+from router.HistoryRouter import router as HistoryRouter
+from router.SettingRouter import router as SettingRouter
+
+app = FastAPI(title="WH API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(AuthRouter, prefix="/api")
+app.include_router(OnboardRouter, prefix="/api")
+app.include_router(RecordRouter, prefix="/api")
+app.include_router(DiaryRouter, prefix="/api")
+app.include_router(PredictionRouter, prefix="/api")
+app.include_router(FeedbackRouter, prefix="/api")
+app.include_router(HistoryRouter, prefix="/api")
+app.include_router(SettingRouter, prefix="/api")
 
 
-def print_hi(name):
-    # 스크립트를 디버그하려면 하단 코드 줄의 중단점을 사용합니다.
-    print(f'Hi, {name}')  # 중단점을 전환하려면 ⌘F8을(를) 누릅니다.
-
-
-# 스크립트를 실행하려면 여백의 녹색 버튼을 누릅니다.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# https://www.jetbrains.com/help/pycharm/에서 PyCharm 도움말 참조
+@app.get("/")
+async def root():
+    return {"message": "WH API"}
