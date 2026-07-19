@@ -28,16 +28,26 @@ SELECT u.user_id, DATE '2024-03-18' - (u.user_id * 3)::int, DATE '2024-03-23' - 
 FROM app_user u;
 
 -- 증상 다이어리 + 호르몬 자가보고 (1건씩)
-INSERT INTO diary_entry (user_id, entry_date, headache, stomachache, mood, fatigue, sleep_quality, stress, lh, e3g, pdg)
+INSERT INTO diary_entry (
+    user_id, entry_date, headache, stomachache, mood, mood_swing, fatigue, sleep_quality, stress,
+    appetite, exercise_level, sore_breasts, food_cravings, indigestion, bloating, lh, e3g, pdg
+)
 SELECT
     u.user_id,
     DATE '2024-04-16',
     (u.user_id % 5),
     (u.user_id % 5) + 1,
     '보통',
+    (u.user_id % 6),
     (u.user_id % 4),
     (u.user_id % 5) + 1,
     (u.user_id % 6),
+    ((u.user_id + 1) % 6),
+    ((u.user_id + 2) % 6),
+    ((u.user_id + 3) % 6),
+    ((u.user_id + 4) % 6),
+    (u.user_id % 4),
+    ((u.user_id + 2) % 5),
     5 + (u.user_id % 10),
     40 + (u.user_id % 8) * 15,
     1 + (u.user_id % 5) * 0.8

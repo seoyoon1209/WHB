@@ -69,9 +69,16 @@ CREATE TABLE diary_entry (
     headache       SMALLINT,
     stomachache    SMALLINT,
     mood           VARCHAR(20),
+    mood_swing     SMALLINT,
     fatigue        SMALLINT,
     sleep_quality  SMALLINT,
     stress         SMALLINT,
+    appetite       SMALLINT,
+    exercise_level SMALLINT,
+    sore_breasts   SMALLINT,
+    food_cravings  SMALLINT,
+    indigestion    SMALLINT,
+    bloating       SMALLINT,
     lh             NUMERIC(8, 2),
     e3g            NUMERIC(8, 2),
     pdg            NUMERIC(8, 2),
@@ -84,6 +91,13 @@ CREATE TABLE diary_entry (
 );
 
 COMMENT ON TABLE diary_entry IS '증상/생활/호르몬 자가보고';
+COMMENT ON COLUMN diary_entry.mood_swing IS '기분 변화 정도 0~5 (data.csv moodswing_ord)';
+COMMENT ON COLUMN diary_entry.appetite IS '식욕 변화 0~5 (data.csv appetite_ord)';
+COMMENT ON COLUMN diary_entry.exercise_level IS '운동량 0~5 (data.csv exerciselevel_ord)';
+COMMENT ON COLUMN diary_entry.sore_breasts IS '유방 압통 0~5 (data.csv sorebreasts_ord)';
+COMMENT ON COLUMN diary_entry.food_cravings IS '음식 갈망 0~5 (data.csv foodcravings_ord)';
+COMMENT ON COLUMN diary_entry.indigestion IS '소화불량 0~5 (data.csv indigestion_ord)';
+COMMENT ON COLUMN diary_entry.bloating IS '복부 팽만 0~5 (data.csv bloating_ord)';
 
 
 -- =========================================================

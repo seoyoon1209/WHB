@@ -18,7 +18,8 @@ async def get_history(username: str, conn: DbPoolDep):
     )
     diaries = await conn.fetch(
         """
-        SELECT diary_id, entry_date, headache, stomachache, mood, fatigue, sleep_quality, stress
+        SELECT diary_id, entry_date, headache, stomachache, mood, mood_swing, fatigue, sleep_quality, stress,
+               appetite, exercise_level, sore_breasts, food_cravings, indigestion, bloating
         FROM diary_entry WHERE user_id = $1 ORDER BY entry_date DESC
         """,
         user_id,
