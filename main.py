@@ -1,6 +1,9 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from db import dbpool
 from router.AuthRouter import router as AuthRouter
 from router.OnboardRouter import router as OnboardRouter
 from router.RecordRouter import router as RecordRouter
@@ -10,7 +13,17 @@ from router.FeedbackRouter import router as FeedbackRouter
 from router.HistoryRouter import router as HistoryRouter
 from router.SettingRouter import router as SettingRouter
 
-app = FastAPI(title="WH API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await dbpool.init()
+    print("DB 연결")
+    yield
+    await dbpool.dispose()
+    print("DB 종료")
+
+
+app = FastAPI(title="WH API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

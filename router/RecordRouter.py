@@ -1,26 +1,75 @@
 # 월경 기록 (SFR-003)
 from datetime import date
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from db.dbpool import DbPoolDep
 
 router = APIRouter(prefix="/records", tags=["records"])
 
-_records: list[dict] = []
-
 
 class PeriodRecord(BaseModel):
-    email: str
     start_date: date
     end_date: date | None = None
 
 
-@router.post("", response_model=PeriodRecord)
-def create_record(body: PeriodRecord):
-    _records.append(body.model_dump())
-    return body
+class PeriodRecordResponse(PeriodRecord):
+    record_id: int
 
 
-@router.get("/{email}", response_model=list[PeriodRecord])
-def list_records(email: str):
-    return [r for r in _records if r["email"] == email]
+class EndDateRequest(BaseModel):
+    end_date: date
+
+
+async def _get_user_id(conn, username: str) -> int:
+    row = await conn.fetchrow("SELECT user_id FROM app_user WHERE username = $1", username)
+    if not row:
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+    return row["user_id"]
+
+
+@router.post("/{username}", response_model=PeriodRecordResponse)
+async def create_record(username: str, body: PeriodRecord, conn: DbPoolDep):
+    user_id = await _get_user_id(conn, username)
+    row = await conn.fetchrow(
+        """
+        INSERT INTO period_record (user_id, start_date, end_date)
+        VALUES ($1, $2, $3)
+        RETURNING record_id, start_date, end_date
+        """,
+        user_id,
+        body.start_date,
+        body.end_date,
+    )
+    return dict(row)
+
+
+@router.get("/{username}", response_model=list[PeriodRecordResponse])
+async def list_records(username: str, conn: DbPoolDep):
+    user_id = await _get_user_id(conn, username)
+    rows = await conn.fetch(
+        "SELECT record_id, start_date, end_date FROM period_record WHERE user_id = $1 ORDER BY start_date DESC",
+        user_id,
+    )
+    return [dict(row) for row in rows]
+
+
+@router.patch("/{username}/latest", response_model=PeriodRecordResponse)
+async def set_latest_end_date(username: str, body: EndDateRequest, conn: DbPoolDep):
+    user_id = await _get_user_id(conn, username)
+    row = await conn.fetchrow(
+        """
+        UPDATE period_record SET end_date = $2
+        WHERE record_id = (
+            SELECT record_id FROM period_record
+            WHERE user_id = $1 AND end_date IS NULL
+            ORDER BY start_date DESC LIMIT 1
+        )
+        RETURNING record_id, start_date, end_date
+        """,
+        user_id,
+        body.end_date,
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="종료할 진행 중인 기록이 없습니다.")
+    return dict(row)
