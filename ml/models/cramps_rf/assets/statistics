@@ -1,0 +1,122 @@
+{
+  "features": [
+    {
+      "name": "phase",
+      "categorical": {
+        "vocabulary": [
+          "Follicular",
+          "Fertility",
+          "Luteal",
+          "Menstrual"
+        ]
+      }
+    },
+    {
+      "name": "lh",
+      "numerical": {
+        "mean": 5.275780274656679,
+        "variance": 45.406117524754485
+      }
+    },
+    {
+      "name": "estrogen",
+      "numerical": {
+        "mean": 137.93364544319599,
+        "variance": 12402.620153876787
+      }
+    },
+    {
+      "name": "phase_cos",
+      "numerical": {
+        "mean": -0.029026217228464463,
+        "variance": 0.41207882702801274
+      }
+    },
+    {
+      "name": "appetite_ord",
+      "numerical": {
+        "mean": 2.9076154806491887,
+        "variance": 0.6862216548914357
+      }
+    },
+    {
+      "name": "exerciselevel_ord",
+      "numerical": {
+        "mean": 2.378589263420724,
+        "variance": 0.963723852518933
+      }
+    },
+    {
+      "name": "headaches_ord",
+      "numerical": {
+        "mean": 1.466916354556804,
+        "variance": 1.9823636496825907
+      }
+    },
+    {
+      "name": "sorebreasts_ord",
+      "numerical": {
+        "mean": 0.8461298377028714,
+        "variance": 1.2500443227177016
+      }
+    },
+    {
+      "name": "fatigue_ord",
+      "numerical": {
+        "mean": 2.491573033707865,
+        "variance": 2.1687804219444793
+      }
+    },
+    {
+      "name": "sleepissue_ord",
+      "numerical": {
+        "mean": 2.0068664169787764,
+        "variance": 2.1591288822804207
+      }
+    },
+    {
+      "name": "moodswing_ord",
+      "numerical": {
+        "mean": 1.565230961298377,
+        "variance": 2.019153161388464
+      }
+    },
+    {
+      "name": "stress_ord",
+      "numerical": {
+        "mean": 2.5770911360799,
+        "variance": 2.1335700653521426
+      }
+    },
+    {
+      "name": "foodcravings_ord",
+      "numerical": {
+        "mean": 1.8174157303370786,
+        "variance": 2.308423284097126
+      }
+    },
+    {
+      "name": "indigestion_ord",
+      "numerical": {
+        "mean": 1.4460049937578028,
+        "variance": 2.00363884641701
+      }
+    },
+    {
+      "name": "bloating_ord",
+      "numerical": {
+        "mean": 1.6004993757802746,
+        "variance": 2.186841198813593
+      }
+    }
+  ],
+  "label": {
+    "name": "cramps_severe",
+    "categorical": {
+      "vocabulary": [
+        "0",
+        "1"
+      ]
+    }
+  }
+}

@@ -27,7 +27,7 @@ app = FastAPI(title="WH API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "https://wmf-j7ri.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

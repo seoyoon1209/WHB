@@ -1,6 +1,7 @@
 # Cycle phase detection + prediction run/result/rationale/guide (SFR-007~011)
 import json
 from datetime import date
+from math import cos, pi
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -68,10 +69,14 @@ async def _build_features(conn, user_id: int, phase: str) -> dict:
     def g(key):
         return diary.get(key) or 0
 
+    phase_order = PHASE_ORDER.get(phase, 3)
+
     return {
         "lh": float(g("lh")),
         "estrogen": float(g("e3g")),
-        "phase_order": PHASE_ORDER.get(phase, 3),
+        "phase_order": phase_order,
+        "phase": phase,
+        "phase_cos": cos(2 * pi * phase_order / len(PHASE_ORDER)),
         "appetite_ord": g("appetite"),
         "exerciselevel_ord": g("exercise_level"),
         "sorebreasts_ord": g("sore_breasts"),
