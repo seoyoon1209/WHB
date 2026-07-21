@@ -7,9 +7,6 @@ from db.dbpool import DbPoolDep
 
 router = APIRouter(prefix="/diaries", tags=["diaries"])
 
-# Maps 1:1 to the *_ord features in data.csv. Derived labels that only exist in the dataset,
-# like cramps_severe (=cramps_ord>=4), are computed at prediction time rather than user input,
-# so they are not included here.
 _ENTRY_COLUMNS = (
     "headache",       # headaches_ord
     "stomachache",    # cramps_ord

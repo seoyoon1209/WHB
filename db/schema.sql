@@ -2,9 +2,8 @@ BEGIN;
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- =========================================================
+
 -- 1. 사용자 (SFR-001)
--- =========================================================
 CREATE TABLE app_user (
     user_id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username       VARCHAR(50) NOT NULL,
@@ -19,10 +18,7 @@ COMMENT ON TABLE app_user IS '사용자';
 COMMENT ON COLUMN app_user.username IS '로그인 아이디';
 COMMENT ON COLUMN app_user.password_hash IS 'pgcrypto bcrypt 해시';
 
-
--- =========================================================
 -- 2. 온보딩 기초정보 (SFR-002)
--- =========================================================
 CREATE TABLE onboard_profile (
     user_id          BIGINT PRIMARY KEY,
     age              INTEGER,
@@ -39,9 +35,7 @@ CREATE TABLE onboard_profile (
 COMMENT ON TABLE onboard_profile IS '온보딩 기초정보';
 
 
--- =========================================================
 -- 3. 월경 기록 (SFR-003)
--- =========================================================
 CREATE TABLE period_record (
     record_id     BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id       BIGINT NOT NULL,
@@ -59,9 +53,7 @@ CREATE TABLE period_record (
 COMMENT ON TABLE period_record IS '월경 기록';
 
 
--- =========================================================
 -- 4. 증상/생활/호르몬 자가보고 (SFR-004~006)
--- =========================================================
 CREATE TABLE diary_entry (
     diary_id       BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id        BIGINT NOT NULL,
@@ -100,9 +92,7 @@ COMMENT ON COLUMN diary_entry.indigestion IS '소화불량 0~5 (data.csv indiges
 COMMENT ON COLUMN diary_entry.bloating IS '복부 팽만 0~5 (data.csv bloating_ord)';
 
 
--- =========================================================
 -- 5. 예측 결과 (SFR-007~010)
--- =========================================================
 CREATE TABLE prediction_result (
     prediction_id     BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id           BIGINT NOT NULL,
@@ -122,9 +112,7 @@ COMMENT ON TABLE prediction_result IS '예측 결과 (SFR-008~010)';
 COMMENT ON COLUMN prediction_result.factors IS '기여 요인 [{label, value}] JSON';
 
 
--- =========================================================
 -- 6. 실제 결과 피드백 (SFR-012)
--- =========================================================
 CREATE TABLE feedback_result (
     feedback_id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     prediction_id      BIGINT,
@@ -143,9 +131,7 @@ CREATE TABLE feedback_result (
 COMMENT ON TABLE feedback_result IS '실제 결과 피드백';
 
 
--- =========================================================
 -- 7. 모드/동의 설정 (SFR-014~015)
--- =========================================================
 CREATE TABLE user_setting (
     user_id      BIGINT PRIMARY KEY,
     mode         VARCHAR(20) NOT NULL DEFAULT 'simple',
@@ -162,9 +148,7 @@ CREATE TABLE user_setting (
 COMMENT ON TABLE user_setting IS '예측 모드 / 동의 설정';
 
 
--- =========================================================
 -- 인덱스
--- =========================================================
 CREATE INDEX idx_period_record_user_id ON period_record (user_id);
 CREATE INDEX idx_diary_entry_user_id ON diary_entry (user_id);
 CREATE INDEX idx_prediction_result_user_id ON prediction_result (user_id);
